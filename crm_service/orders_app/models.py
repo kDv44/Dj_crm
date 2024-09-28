@@ -1,8 +1,5 @@
 from datetime import datetime
-from xml.dom import ValidationErr
-
 from django.db import models
-from django.utils.translation.trans_null import gettext_lazy
 
 
 class Device(models.Model):
@@ -31,7 +28,7 @@ class Customer(models.Model):
     customer_address = models.TextField(verbose_name="Address")
 
     def __str__(self):
-        return self.customer_name
+        return f"{self.customer_name} / {self.customer_address}"
 
 
 class DeviceInField(models.Model):
@@ -42,20 +39,17 @@ class DeviceInField(models.Model):
         verbose_name_plural = "Devices in field"
 
     serial_number = models.TextField(verbose_name="Serial number")
-    customer_id = models.ForeignKey(
-        Customer, on_delete=models.RESTRICT, verbose_name="Customer id"
+    customer = models.ForeignKey(
+        Customer, on_delete=models.RESTRICT, verbose_name="Customer"
     )
-    analyzer_id = models.ForeignKey(
-        Device, on_delete=models.RESTRICT, verbose_name="Analyzer id"
+    analyzer = models.ForeignKey(
+        Device, on_delete=models.RESTRICT, verbose_name="Equipment"
     )
     owner_status = models.TextField(verbose_name="Affiliation status")
 
-
-def status_validator(order_status):
-    if order_status not in ["open", "closed", "in progress", "need info"]:
-        raise ValidationErr(
-            gettext_lazy("%(order_status)s is wrong order status"),
-            params={"order status": order_status},
+    def __str__(self):
+        return (
+            f"{self.analyzer} serial number > {self.serial_number} in {self.customer}"
         )
 
 
@@ -66,20 +60,23 @@ class Order(models.Model):
         verbose_name = "Orders"
         verbose_name_plural = "Orders"
 
-    devices = models.ForeignKey(
-        Device, verbose_name="Device", on_delete=models.RESTRICT
+    statuses = (
+        ("open", "Open"),
+        ("closed", "Closed"),
+        ("in progress", "In progress"),
+        ("need info", "Need info"),
     )
-    customer = models.ForeignKey(
-        Customer, verbose_name="End user", on_delete=models.RESTRICT
-    )
-    description = models.TextField(verbose_name="Description")
+
+    device = models.ForeignKey(Device, verbose_name="Device", on_delete=models.RESTRICT)
+    order_description = models.TextField(verbose_name="Description")
     created_dt = models.DateTimeField(verbose_name="Created", auto_now_add=True)
-    last_update_dt = models.DateTimeField(
+    last_updated_dt = models.DateTimeField(
         verbose_name="Last update", blank=True, null=True
     )
-    order_status = models.TextField(
-        verbose_name="Order status", validators=[status_validator]
-    )
+    order_status = models.TextField(verbose_name="Order status", choices=statuses)
+
+    def __str__(self):
+        return f"Order №{self.id} for {self.device}"
 
     def save(self, *args, **kwargs):
         self.last_update_dt = datetime.now()
