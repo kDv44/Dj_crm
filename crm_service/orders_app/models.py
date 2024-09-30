@@ -1,5 +1,6 @@
 from datetime import datetime
 from django.db import models
+from phonenumber_field.modelfields import PhoneNumberField
 
 
 class Device(models.Model):
@@ -24,6 +25,10 @@ class Customer(models.Model):
         verbose_name_plural = "Description counterparty"
 
     customer_name = models.TextField(verbose_name="Company name")
+    customer_email = models.EmailField(verbose_name="Email", null=False, blank=True)
+    customer_phone = PhoneNumberField(
+        verbose_name="Phone number", null=False, blank=False, default="+00000000000"
+    )
     customer_city = models.TextField(verbose_name="City")
     customer_address = models.TextField(verbose_name="Address")
 

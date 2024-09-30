@@ -17,7 +17,25 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+from orders_app.views import (
+    CustomerListCreate,
+    CustomerDetail,
+    CustomerByCity,
+    CustomerByEmail,
+)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/customers/", CustomerListCreate.as_view(), name="customer-list-create"),
+    path("api/customers/<int:pk>/", CustomerDetail.as_view(), name="customer-detail"),
+    path(
+        "api/customers/city/<str:city>/",
+        CustomerByCity.as_view(),
+        name="customer-by-city",
+    ),
+    path(
+        "api/customers/email/<str:email>/",
+        CustomerByEmail.as_view(),
+        name="customer-by-email",
+    ),
 ]
