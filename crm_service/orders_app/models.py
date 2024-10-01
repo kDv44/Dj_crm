@@ -3,20 +3,6 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
 
-class Device(models.Model):
-
-    class Meta:
-        db_table = "Devices"
-        verbose_name = "Available Devices"
-        verbose_name_plural = "Available Devices"
-
-    manufacturer = models.TextField(verbose_name="Manufacturer")
-    model = models.TextField(verbose_name="Model")
-
-    def __str__(self):
-        return f"{self.manufacturer} {self.model}"
-
-
 class Customer(models.Model):
 
     class Meta:
@@ -27,13 +13,40 @@ class Customer(models.Model):
     customer_name = models.TextField(verbose_name="Company name")
     customer_email = models.EmailField(verbose_name="Email", null=False, blank=True)
     customer_phone = PhoneNumberField(
-        verbose_name="Phone number", null=False, blank=False, default="+00000000000"
+        verbose_name="Phone number", null=False, blank=False, default=None
     )
     customer_city = models.TextField(verbose_name="City")
     customer_address = models.TextField(verbose_name="Address")
 
     def __str__(self):
         return f"{self.customer_name} / {self.customer_address}"
+
+
+class Device(models.Model):
+
+    class Meta:
+        db_table = "Devices"
+        verbose_name = "Available Devices"
+        verbose_name_plural = "Available Devices"
+
+    manufacturer = models.TextField(verbose_name="Manufacturer")
+    model = models.TextField(verbose_name="Model")
+
+    date_entered = models.DateTimeField(
+        verbose_name="Date Entered", null=True, blank=True
+    )
+    date_returned = models.DateTimeField(
+        verbose_name="Date Returned", null=True, blank=True
+    )
+    is_in_field = models.BooleanField(default=False, verbose_name="Is in Field")
+
+    def __str__(self):
+        return f"{self.manufacturer} {self.model}"
+
+    def save(self, *args, **kwargs):
+        if self.date_returned and self.date_returned < self.date_entered:
+            raise ValueError("Date Returned cannot be earlier than Date Entered.")
+        super().save(*args, **kwargs)
 
 
 class DeviceInField(models.Model):

@@ -23,7 +23,6 @@ from orders_app.views import (
     DeviceDetail,
     DeviceByManufacturer,
     DeviceByModel,
-
     CustomerListCreate,
     CustomerDetail,
     CustomerByCity,
@@ -34,7 +33,6 @@ from orders_app.views import (
 urlpatterns = [
     path("admin/", admin.site.urls),
     ### device ###
-
     path("api/device/", DeviceListCreate.as_view(), name="device-list-create"),
     path("api/device/<int:pk>/", DeviceDetail.as_view(), name="device-detail"),
     path(
@@ -47,9 +45,7 @@ urlpatterns = [
         DeviceByModel.as_view(),
         name="device-by-model",
     ),
-
     ### customer ###
-
     path("api/customers/", CustomerListCreate.as_view(), name="customer-list-create"),
     path("api/customers/<int:pk>/", CustomerDetail.as_view(), name="customer-detail"),
     path(

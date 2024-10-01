@@ -55,4 +55,3 @@ class CustomerByEmail(generics.ListAPIView):
     def get_queryset(self):
         email = self.kwargs["email"]
         return Customer.objects.filter(customer_email=email)
-
