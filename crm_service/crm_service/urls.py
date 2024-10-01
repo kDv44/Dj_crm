@@ -17,15 +17,39 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
+
 from orders_app.views import (
+    DeviceListCreate,
+    DeviceDetail,
+    DeviceByManufacturer,
+    DeviceByModel,
+
     CustomerListCreate,
     CustomerDetail,
     CustomerByCity,
     CustomerByEmail,
 )
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
+    ### device ###
+
+    path("api/device/", DeviceListCreate.as_view(), name="device-list-create"),
+    path("api/device/<int:pk>/", DeviceDetail.as_view(), name="device-detail"),
+    path(
+        "api/device/manufacturer/<str:manufacturer>/",
+        DeviceByManufacturer.as_view(),
+        name="device-by-manufacturer",
+    ),
+    path(
+        "api/device/model/<str:model>/",
+        DeviceByModel.as_view(),
+        name="device-by-model",
+    ),
+
+    ### customer ###
+
     path("api/customers/", CustomerListCreate.as_view(), name="customer-list-create"),
     path("api/customers/<int:pk>/", CustomerDetail.as_view(), name="customer-detail"),
     path(

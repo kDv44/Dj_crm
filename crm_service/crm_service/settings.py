@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #############
     "phonenumbers",
-    "pytest-django",
     #############s
     "rest_framework",
 ]
