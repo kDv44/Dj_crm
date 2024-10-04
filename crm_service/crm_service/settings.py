@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #############
     "phonenumbers",
-    #############s
+    "django_filters",
     "rest_framework",
 ]
 

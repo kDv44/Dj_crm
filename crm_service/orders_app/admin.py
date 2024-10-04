@@ -11,10 +11,10 @@ class DeviceAdmin(admin.ModelAdmin):
 class OrderAdmin(admin.ModelAdmin):
 
     def my_customer(self, obj):
-        return obj.device.customer.customer_name
+        return obj.device.customer.name
 
     def my_serial_number(self, obj):
-        return obj.device.serial_number
+        return obj.device.number
 
     def my_device_model(self, obj):
         return obj.device.analyzer.model
@@ -42,16 +42,16 @@ class OrderAdmin(admin.ModelAdmin):
         "device__customer__customer_name",
         "device__id",
         "device__serial_number",
-        "device__analyzer__model",
-        "device__analyzer__manufacturer",
+        "field_device__model",
+        "field_device__manufacturer",
     )
 
     raw_id_fields = ("device",)
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    search_fields = ("customer_name", "customer_address")
-    list_display = ("id", "customer_name", "customer_address", "customer_city")
+    search_fields = ("name", "address")
+    list_display = ("id", "name", "address", "city")
 
 
 class DeviceInFieldAdmin(admin.ModelAdmin):
@@ -69,7 +69,7 @@ class DeviceInFieldAdmin(admin.ModelAdmin):
     my_device_model.short_description = "Model"
 
     search_fields = ("serial_number",)
-    raw_id_fields = ("customer", "analyzer")
+    raw_id_fields = ("customer", "field_device")
     list_display = (
         "id",
         "my_device_manufacturer",
