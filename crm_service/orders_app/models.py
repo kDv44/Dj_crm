@@ -1,6 +1,12 @@
+import os
+
 from datetime import datetime
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+
+from dotenv import load_dotenv, dotenv_values
+
+load_dotenv()
 
 
 class Customer(models.Model):
@@ -8,7 +14,11 @@ class Customer(models.Model):
     name = models.TextField(verbose_name="Company name")
     email = models.EmailField(verbose_name="Email", null=False, blank=True)
     phone = PhoneNumberField(
-        verbose_name="Phone number", null=True, blank=False, default=None
+        region=str(os.getenv("PHONE_ZONE")),
+        verbose_name="Phone number",
+        null=True,
+        blank=False,
+        default=None,
     )
     city = models.TextField(verbose_name="City")
     address = models.TextField(verbose_name="Address")
