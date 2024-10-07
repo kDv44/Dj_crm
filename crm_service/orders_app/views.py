@@ -1,11 +1,18 @@
-from rest_framework import generics
+from .serializers import DeviceSerializer, CustomerSerializer
 from django_filters.rest_framework import DjangoFilterBackend
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+from rest_framework import generics, filters
 from .models import Device, Customer
-from .serializers import CustomerSerializer, DeviceSerializer
-from rest_framework import filters
 
 
-class DeviceListCreate(generics.ListCreateAPIView):
+class CachedListCreateAPIView(generics.ListCreateAPIView):
+    @method_decorator(cache_page(60 * 60 * 2))
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+
+class DeviceListCreate(CachedListCreateAPIView):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)
@@ -18,7 +25,7 @@ class DeviceDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = DeviceSerializer
 
 
-class CustomerListCreate(generics.ListCreateAPIView):
+class CustomerListCreate(CachedListCreateAPIView):
     queryset = Customer.objects.all()
     serializer_class = CustomerSerializer
     filter_backends = (DjangoFilterBackend, filters.SearchFilter)

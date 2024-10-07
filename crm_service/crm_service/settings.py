@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     #############
     "phonenumbers",
+    "debug_toolbar",
     "django_filters",
     "rest_framework",
 ]
@@ -44,10 +45,18 @@ MIDDLEWARE = [
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    #############
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
+    #############
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
+]
+
+INTERNAL_IPS = [
+    # ...
+    "127.0.0.1",
 ]
 
 ROOT_URLCONF = "crm_service.urls"
@@ -94,13 +103,13 @@ DATABASES = {
 
 CACHES = {
     "default": {
-        "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": os.environ.get("REDIS_URL", "redis://localhost:6379/"),
-        "KEY_PREFIX": "imdb",
-        "TIMEOUT": 60 * 15,  # in seconds: 60 * 15 (15 minutes)
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://localhost:6379/",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+        },
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
