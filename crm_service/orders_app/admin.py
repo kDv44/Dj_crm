@@ -50,8 +50,8 @@ class OrderAdmin(admin.ModelAdmin):
 
 
 class CustomerAdmin(admin.ModelAdmin):
-    search_fields = ("name", "address")
-    list_display = ("id", "name", "address", "city")
+    search_fields = ("company_name", "address")
+    list_display = ("id", "company_name", "address", "city")
 
 
 class DeviceInFieldAdmin(admin.ModelAdmin):
@@ -67,6 +67,10 @@ class DeviceInFieldAdmin(admin.ModelAdmin):
     my_customer.short_description = "Customer"
     my_device_manufacturer.short_description = "Manufacturer"
     my_device_model.short_description = "Model"
+
+    list_display = ("serial_number", "customer", "field_device", "owner_status")
+    search_fields = ("serial_number", "customer__name")
+    list_filter = ("owner_status",)
 
     search_fields = ("serial_number",)
     raw_id_fields = ("customer", "field_device")

@@ -26,6 +26,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     # new application added
     "orders_app",
+    "employees_app",
     #############
     "django.contrib.admin",
     "django.contrib.auth",
@@ -108,7 +109,7 @@ CACHES = {
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
         },
-    }
+    },
 }
 
 # Password validation

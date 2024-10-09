@@ -4,14 +4,14 @@ from datetime import datetime
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 
-from dotenv import load_dotenv, dotenv_values
+from dotenv import load_dotenv
 
 load_dotenv()
 
 
 class Customer(models.Model):
 
-    name = models.TextField(verbose_name="Company name")
+    company_name = models.TextField(verbose_name="Company name")
     email = models.EmailField(verbose_name="Email", null=False, blank=True)
     phone = PhoneNumberField(
         region=str(os.getenv("PHONE_ZONE")),
@@ -22,6 +22,9 @@ class Customer(models.Model):
     )
     city = models.TextField(verbose_name="City")
     address = models.TextField(verbose_name="Address")
+    registration_date = models.DateTimeField(
+        verbose_name="Registration date", default=datetime.now()
+    )
 
     class Meta:
         db_table = "Customers"
@@ -62,6 +65,12 @@ class Device(models.Model):
 
 
 class DeviceInField(models.Model):
+    STATUS_CHOICES = [
+        ("available", "Available"),
+        ("in_use", "In Use"),
+        ("under_repair", "Under Repair"),
+        ("returned", "Returned"),
+    ]
 
     serial_number = models.TextField(verbose_name="Serial number")
     customer = models.ForeignKey(
@@ -70,7 +79,12 @@ class DeviceInField(models.Model):
     field_device = models.ForeignKey(
         Device, blank=True, null=True, on_delete=models.RESTRICT, verbose_name="Device"
     )
-    owner_status = models.TextField(verbose_name="Affiliation status")
+    owner_status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="available",
+        verbose_name="Device Status",
+    )
 
     class Meta:
         db_table = "Devices_in_fields"
